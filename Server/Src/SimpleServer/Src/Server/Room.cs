@@ -11,6 +11,10 @@ namespace Lockstep.FakeServer {
         
         //map
         private Dictionary<int, int> _id2LocalId = new Dictionary<int, int>();
+        /// <summary>
+        /// <para>每帧对应的输入(key = 帧号, value = 输入)</para>
+        /// <para>输入PlayerInput[]数组: index = 玩家序号, value = 玩家对应的输入</para>
+        /// </summary>
         private Dictionary<int, PlayerInput[]> _tick2Inputs = new Dictionary<int, PlayerInput[]>();
         private Dictionary<int, int[]> _tick2Hashes = new Dictionary<int, int[]>();
         
@@ -32,7 +36,9 @@ namespace Lockstep.FakeServer {
             CheckInput();
         }
 
-
+        /// <summary>
+        /// 检查当前帧输入情况
+        /// </summary>
         private void CheckInput(){
             if (_tick2Inputs.TryGetValue(_curTick, out var inputs)) {
                 if (inputs != null) {
@@ -44,6 +50,7 @@ namespace Lockstep.FakeServer {
                         }
                     }
 
+                    // 当前帧所有玩家输入已全部到来，广播输入信息
                     if (isFullInput) {
                         BoardInputMsg(_curTick, inputs);
                         _tick2Inputs.Remove(_curTick);
